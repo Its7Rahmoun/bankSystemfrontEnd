@@ -1,0 +1,77 @@
+<div class="row mt-1">
+  <div class="col col-md-6">
+    <div class="card">
+      <ng-container *ngIf="customer">
+        <div class="card-header">
+          accounts : {{customer.name}}
+          <button *ngIf="isAdmin" (click)="handledisplayingCreateAcountPart()"  style="margin-left: 57%;" class="btn btn-success">create account</button>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="accounts| async as listaccounts; else failureOrLading">
+        <div class="card-body">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>account id</th><th>type</th><th>balance</th>
+              </tr>
+              </thead>
+              <tbody>
+                  <tr *ngFor="let c of accounts | async">
+                    <td>
+                      {{c.id}}
+                    </td>
+                    <td>
+                      {{c.type}}
+                    </td>
+                    <td>
+                      {{c.balance | number : '1.2-2'}}
+                    </td>
+                  </tr>
+              </tbody>
+          </table>
+        </div>
+      </ng-container>
+  
+        <ng-template #failureOrLading>
+      <ng-container *ngIf="errorMessage; else loading">
+        <div class="text-danger">
+          {{errorMessage}}
+        </div>
+      </ng-container>
+      <ng-template #loading>
+        Loading .....
+      </ng-template>
+    </ng-template>
+    </div>  
+  </div>
+  <div *ngIf="createAccountdisplay && isAdmin" class="col col-md-6">
+    <div class="card">
+      <div class="card-header">Create new Account</div>
+      <div class="card-body">
+        <form [formGroup]="createAccountFromGroup" (ngSubmit)="handleCreateAccount()" >
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" formControlName="accountType" value="SavingAccount">
+            <label class="form-check-label">SavingAccount:</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" formControlName="accountType" value="CurrentAccount">
+            <label class="form-check-label">CurrentAccount:</label>
+          </div>
+          <div class="mb-3" >
+            <label class="form-label">Balance :</label>
+            <input type="text" formControlName="balance" class="form-control">
+          </div>
+          <div class="mb-3" *ngIf="createAccountFromGroup.value.accountType=='CurrentAccount'" >
+            <label class="form-label">OverDraft:</label>
+            <input type="text" formControlName="overDraft" class="form-control">
+          </div>
+          <div class="mb-3" *ngIf="createAccountFromGroup.value.accountType=='SavingAccount'"  >
+            <label class="form-label">InterestRate:</label>
+            <input type="text" formControlName="interestRate" class="form-control">
+          </div>
+          <button class="btn btn-info">create</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
